@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+<title>BMW Astra Performance</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#02050b;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    position:relative;
+    color:white;
+}
+
+/* THREE.JS BACKGROUND */
+#scene{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:1;
+}
+
+/* DARK CINEMATIC OVERLAY */
+.vignette{
+    position:fixed;
+    inset:0;
+    z-index:2;
+    pointer-events:none;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            transparent 20%,
+            rgba(0,0,0,.25) 55%,
+            rgba(0,0,0,.85) 100%
+        );
+}
+
+/* BLUE HORIZON */
+.horizon{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:27%;
+    height:2px;
+    z-index:3;
+    pointer-events:none;
+
+    background:linear-gradient(
+        90deg,
+        transparent,
+        rgba(0,130,255,.1),
+        rgba(0,170,255,.9),
+        rgba(0,130,255,.1),
+        transparent
+    );
+
+    box-shadow:
+        0 0 15px #008cff,
+        0 0 45px rgba(0,130,255,.7);
+}
+
+/* SPEED LINES */
+.speed-lines{
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    z-index:3;
+    pointer-events:none;
+}
+
+.line{
+    position:absolute;
+    height:1px;
+    width:150px;
+
+    background:linear-gradient(
+        90deg,
+        transparent,
+        rgba(40,150,255,.8),
+        white
+    );
+
+    box-shadow:0 0 8px rgba(0,150,255,.8);
+
+    animation:speed 1.2s linear infinite;
+}
+
+.line:nth-child(1){top:20%;animation-delay:.1s}
+.line:nth-child(2){top:32%;animation-delay:.5s}
+.line:nth-child(3){top:44%;animation-delay:.9s}
+.line:nth-child(4){top:56%;animation-delay:.3s}
+.line:nth-child(5){top:67%;animation-delay:.7s}
+.line:nth-child(6){top:78%;animation-delay:.2s}
+.line:nth-child(7){top:88%;animation-delay:.8s}
+
+@keyframes speed{
+    from{
+        transform:translateX(-250px);
+        opacity:0;
+    }
+
+    15%{
+        opacity:1;
+    }
+
+    to{
+        transform:translateX(110vw);
+        opacity:0;
+    }
+}
+
+/* LOGIN AREA */
+.ui{
+    position:fixed;
+    inset:0;
+    z-index:10;
+
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+
+    padding:6vw;
+    pointer-events:none;
+}
+
+/* GLASS CARD */
+.login-card{
+    width:min(390px,90vw);
+    padding:38px 32px;
+
+    border:1px solid rgba(255,255,255,.14);
+    border-radius:24px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.13),
+            rgba(255,255,255,.035)
+        );
+
+    backdrop-filter:blur(22px);
+    -webkit-backdrop-filter:blur(22px);
+
+    box-shadow:
+        0 25px 80px rgba(0,0,0,.65),
+        inset 0 1px rgba(255,255,255,.15),
+        0 0 50px rgba(0,100,255,.12);
+
+    pointer-events:auto;
+
+    transform:
+        perspective(1000px)
+        rotateY(-4deg);
+
+    transition:
+        transform .4s ease,
+        box-shadow .4s ease;
+}
+
+.login-card:hover{
+    transform:
+        perspective(1000px)
+        rotateY(0deg)
+        translateY(-5px);
+
+    box-shadow:
+        0 35px 100px rgba(0,0,0,.75),
+        0 0 70px rgba(0,120,255,.18);
+}
+
+/* LOGO */
+.logo{
+    width:58px;
+    height:58px;
+    margin:auto;
+
+    border-radius:50%;
+
+    border:2px solid rgba(255,255,255,.8);
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-weight:bold;
+    font-size:12px;
+
+    background:
+        radial-gradient(
+            circle,
+            #1976ff,
+            #062d74 55%,
+            #020814
+        );
+
+    box-shadow:
+        0 0 20px rgba(0,120,255,.7),
+        inset 0 0 15px rgba(255,255,255,.2);
+}
+
+.brand{
+    text-align:center;
+    margin-top:18px;
+}
+
+.brand h1{
+    font-size:25px;
+    letter-spacing:4px;
+    font-weight:700;
+}
+
+.brand p{
+    margin-top:8px;
+    font-size:10px;
+    letter-spacing:4px;
+    color:#71b9ff;
+}
+
+/* INPUTS */
+.field{
+    margin-top:24px;
+}
+
+.field label{
+    display:block;
+    font-size:10px;
+    letter-spacing:2px;
+    color:#8fa4bd;
+    margin-bottom:8px;
+}
+
+.field input{
+    width:100%;
+    height:48px;
+
+    border:1px solid rgba(255,255,255,.13);
+    border-radius:12px;
+
+    outline:none;
+
+    color:white;
+    background:rgba(0,0,0,.28);
+
+    padding:0 15px;
+
+    font-size:14px;
+
+    transition:.25s;
+}
+
+.field input:focus{
+    border-color:#168cff;
+
+    box-shadow:
+        0 0 0 2px rgba(0,130,255,.1),
+        0 0 20px rgba(0,130,255,.15);
+}
+
+/* BUTTON */
+.enter{
+    width:100%;
+    height:50px;
+
+    margin-top:25px;
+
+    border:0;
+    border-radius:12px;
+
+    cursor:pointer;
+
+    color:white;
+    font-weight:bold;
+    letter-spacing:3px;
+
+    background:
+        linear-gradient(
+            100deg,
+            #0454ff,
+            #00a2ff
+        );
+
+    box-shadow:
+        0 10px 30px rgba(0,100,255,.3);
+
+    transition:.25s;
+}
+
+.enter:hover{
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 15px 40px rgba(0,130,255,.5);
+}
+
+.enter:active{
+    transform:scale(.98);
+}
+
+/* SOUND BUTTON */
+.sound{
+    position:fixed;
+
+    left:22px;
+    bottom:22px;
+
+    z-index:20;
+
+    width:46px;
+    height:46px;
+
+    border-radius:50%;
+
+    border:1px solid rgba(255,255,255,.2);
+
+    background:rgba(0,0,0,.45);
+
+    color:white;
+
+    cursor:pointer;
+
+    backdrop-filter:blur(12px);
+
+    box-shadow:
+        0 0 25px rgba(0,120,255,.15);
+}
+
+.sound.active{
+    border-color:#168cff;
+
+    box-shadow:
+        0 0 25px rgba(0,130,255,.5);
+}
+
+/* SPEED DISPLAY */
+.speed{
+    position:fixed;
+
+    left:22px;
+    top:22px;
+
+    z-index:20;
+
+    font-size:11px;
+    letter-spacing:3px;
+
+    color:#80c7ff;
+
+    text-shadow:
+        0 0 10px #008cff;
+}
+
+/* LOADING */
+.loading{
+    position:fixed;
+    inset:0;
+
+    z-index:100;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:#02050b;
+
+    transition:
+        opacity .8s ease,
+        visibility .8s ease;
+}
+
+.loading.hide{
+    opacity:0;
+    visibility:hidden;
+}
+
+.loader-text{
+    text-align:center;
+    letter-spacing:4px;
+    font-size:11px;
+    color:#78bfff;
+}
+
+.loader-bar{
+    width:180px;
+    height:2px;
+
+    margin-top:15px;
+
+    overflow:hidden;
+
+    background:rgba(255,255,255,.1);
+}
+
+.loader-bar span{
+    display:block;
+    width:30%;
+
+    height:100%;
+
+    background:#168cff;
+
+    box-shadow:
+        0 0 15px #168cff;
+
+    animation:load 1s linear infinite;
+}
+
+@keyframes load{
+    from{
+        transform:translateX(-100%);
+    }
+
+    to{
+        transform:translateX(500%);
+    }
+}
+
+/* MOBILE */
+@media(max-width:700px){
+
+    .ui{
+        justify-content:center;
+        align-items:flex-end;
+
+        padding:
+            20px
+            20px
+            45px;
+    }
+
+    .login-card{
+        width:min(390px,94vw);
+
+        padding:28px 23px;
+
+        transform:none;
+    }
+
+    .login-card:hover{
+        transform:none;
+    }
+
+    .speed{
+        top:15px;
+        left:15px;
+    }
+
+    .sound{
+        bottom:15px;
+        left:15px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- THREE.JS CANVAS -->
+<canvas id="scene"></canvas>
+
+<!-- CINEMATIC EFFECTS -->
+<div class="vignette"></div>
+
+<div class="horizon"></div>
+
+<div class="speed-lines">
+    <span class="line"></span>
+    <span class="line"></span>
+    <span class="line"></span>
+    <span class="line"></span>
+    <span class="line"></span>
+    <span class="line"></span>
+    <span class="line"></span>
+</div>
+
+<!-- SPEED -->
+<div class="speed">
+    <span id="speedNumber">000</span> KM/H
+</div>
+
+<!-- LOGIN -->
+<div class="ui">
+
+    <div class="login-card">
+
+        <div class="logo">
+            BMW
+        </div>
+
+        <div class="brand">
+            <h1>ASTRA</h1>
+            <p>PERFORMANCE</p>
+        </div>
+
+        <div class="field">
+            <label>USERNAME</label>
+
+            <input
+                id="username"
+                type="text"
+                placeholder="Enter username"
+                autocomplete="off">
+        </div>
+
+        <div class="field">
+            <label>PASSWORD</label>
+
+            <input
+                id="password"
+                type="password"
+                placeholder="Enter password">
+        </div>
+
+        <button class="enter" id="loginButton">
+            ENTER
+        </button>
+
+    </div>
+
+</div>
+
+<!-- SOUND -->
+<button class="sound" id="soundButton">
+    🔊
+</button>
+
+<!-- ENGINE -->
+<audio
+    id="engineAudio"
+    src="engine.mp3"
+    preload="auto"
+    loop>
+</audio>
+
+<!-- LOADING -->
+<div class="loading" id="loading">
+
+    <div class="loader-text">
+
+        <div>
+            INITIALIZING ASTRA
+        </div>
+
+        <div class="loader-bar">
+            <span></span>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- THREE.JS IMPORT MAP -->
+<script type="importmap">
+{
+    "imports": {
+        "three":
+        "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+
+        "three/addons/":
+        "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+    }
+}
+</script>
+
+
+<script type="module">
+
+import * as THREE from "three";
+
+import {
+    GLTFLoader
+}
+from "three/addons/loaders/GLTFLoader.js";
+
+
+/* =========================================================
+   BASIC SETUP
+========================================================= */
+
+const canvas =
+    document.getElementById("scene");
+
+const renderer =
+    new THREE.WebGLRenderer({
+        canvas,
+        antialias:true,
+        alpha:true,
+        powerPreference:"high-performance"
+    });
+
+renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio,2)
+);
+
+renderer.setSize(
+    window.innerWidth,
+    window.innerHeight
+);
+
+renderer.shadowMap.enabled = true;
+
+renderer.shadowMap.type =
+    THREE.PCFSoftShadowMap;
+
+renderer.outputColorSpace =
+    THREE.SRGBColorSpace;
+
+
+/* =========================================================
+   SCENE
+========================================================= */
+
+const scene =
+    new THREE.Scene();
+
+scene.background =
+    new THREE.Color(0x02050b);
+
+
+/* =========================================================
+   CAMERA
+========================================================= */
+
+const camera =
+    new THREE.PerspectiveCamera(
+        42,
+        window.innerWidth /
+        window.innerHeight,
+        0.1,
+        5000
+    );
+
+camera.position.set(
+    0,
+    2.8,
+    12
+);
+
+camera.lookAt(
+    0,
+    1,
+    0
+);
+
+
+/* =========================================================
+   LIGHTING
+========================================================= */
+
+const ambient =
+    new THREE.HemisphereLight(
+        0x7abfff,
+        0x02040a,
+        2.0
+    );
+
+scene.add(ambient);
+
+
+/* BLUE LIGHT */
+
+const blueLight =
+    new THREE.PointLight(
+        0x168cff,
+        90,
+        80
+    );
+
+blueLight.position.set(
+    -8,
+    4,
+    5
+);
+
+scene.add(blueLight);
+
+
+/* WHITE FRONT LIGHT */
+
+const whiteLight =
+    new THREE.PointLight(
+        0xffffff,
+        70,
+        60
+    );
+
+whiteLight.position.set(
+    5,
+    3,
+    10
+);
+
+scene.add(whiteLight);
+
+
+/* =========================================================
+   ROAD
+========================================================= */
+
+const road =
+    new THREE.Mesh(
+
+        new THREE.PlaneGeometry(
+            100,
+            100
+        ),
+
+        new THREE.MeshStandardMaterial({
+            color:0x03070d,
+            roughness:.7,
+            metalness:.15
+        })
+
+    );
+
+road.rotation.x =
+    -Math.PI / 2;
+
+road.position.y =
+    -1.1;
+
+road.position.z =
+    -10;
+
+road.receiveShadow = true;
+
+scene.add(road);
+
+
+/* =========================================================
+   ROAD LIGHTS
+========================================================= */
+
+const roadLights = [];
+
+for(let i=0;i<32;i++){
+
+    const light =
+        new THREE.Mesh(
+
+            new THREE.BoxGeometry(
+                .025,
+                .025,
+                2.5
+            ),
+
+            new THREE.MeshBasicMaterial({
+                color:0x168cff
+            })
+
+        );
+
+    light.position.set(
+        i%2===0 ? -4.5 : 4.5,
+        -1.02,
+        -i*7
+    );
+
+    scene.add(light);
+
+    roadLights.push(light);
+}
+
+
+/* =========================================================
+   ROAD CENTER LIGHTS
+========================================================= */
+
+const centerLights = [];
+
+for(let i=0;i<35;i++){
+
+    const light =
+        new THREE.Mesh(
+
+            new THREE.BoxGeometry(
+                .15,
+                .015,
+                2.2
+            ),
+
+            new THREE.MeshBasicMaterial({
+                color:0x167cff
+            })
+
+        );
+
+    light.position.set(
+        0,
+        -1.04,
+        -i*6
+    );
+
+    scene.add(light);
+
+    centerLights.push(light);
+}
+
+
+/* =========================================================
+   PARTICLES
+========================================================= */
+
+const particleCount = 700;
+
+const positions =
+    new Float32Array(
+        particleCount * 3
+    );
+
+for(let i=0;i<particleCount;i++){
+
+    positions[i*3] =
+        (Math.random()-.5)*80;
+
+    positions[i*3+1] =
+        Math.random()*25-2;
+
+    positions[i*3+2] =
+        Math.random()*-120;
+}
+
+const particleGeometry =
+    new THREE.BufferGeometry();
+
+particleGeometry.setAttribute(
+    "position",
+    new THREE.BufferAttribute(
+        positions,
+        3
+    )
+);
+
+const particleMaterial =
+    new THREE.PointsMaterial({
+
+        color:0x3f9fff,
+
+        size:.06,
+
+        transparent:true,
+
+        opacity:.7
+    });
+
+const particles =
+    new THREE.Points(
+        particleGeometry,
+        particleMaterial
+    );
+
+scene.add(particles);
+
+
+/* =========================================================
+   BMW MODEL
+========================================================= */
+
+let bmw = null;
+
+const carContainer =
+    new THREE.Group();
+
+scene.add(carContainer);
+
+
+/* GLTF LOADER */
+
+const loader =
+    new GLTFLoader();
+
+
+loader.load(
+
+    "bmw.glb",
+
+    function(gltf){
+
+        bmw =
+            gltf.scene;
+
+        /*
+         * Change this if your GLB is extremely
+         * large or extremely small.
+         */
+
+        bmw.scale.set(
+            2,
+            2,
+            2
+        );
+
+
+        /*
+         * Make the model cast/receive shadows.
+         */
+
+        bmw.traverse(
+            function(object){
+
+                if(object.isMesh){
+
+                    object.castShadow = true;
+
+                    object.receiveShadow = true;
+
+                    if(object.material){
+
+                        object.material.needsUpdate =
+                            true;
+                    }
+                }
+
+            }
+        );
+
+
+        /*
+         * IMPORTANT:
+         * Most models face a different direction.
+         *
+         * Start with this.
+         * If your BMW faces backward,
+         * change Math.PI to 0.
+         */
+
+        bmw.rotation.y =
+            Math.PI;
+
+
+        carContainer.add(bmw);
+
+
+        /*
+         * Start position.
+         */
+
+        carContainer.position.set(
+            -20,
+            -0.5,
+            -15
+        );
+
+
+        /*
+         * Hide loading screen.
+         */
+
+        document
+            .getElementById("loading")
+            .classList.add("hide");
+
+    },
+
+    function(xhr){
+
+        if(xhr.total){
+
+            const percent =
+                (xhr.loaded /
+                 xhr.total) * 100;
+
+            console.log(
+                "BMW:",
+                percent.toFixed(0),
+                "%"
+            );
+        }
+
+    },
+
+    function(error){
+
+        console.error(
+            "BMW GLB loading failed:",
+            error
+        );
+
+        document
+            .querySelector(".loader-text div")
+            .textContent =
+            "BMW MODEL NOT FOUND";
+
+    }
+
+);
+
+
+/* =========================================================
+   CAR DRIVING
+========================================================= */
+
+let carProgress = 0;
+
+
+/*
+ * Speed:
+ *
+ * Increase this number for a faster car.
+ */
+
+let driveSpeed = 0.00045;
+
+
+/* =========================================================
+   ENGINE SOUND
+========================================================= */
+
+const engine =
+    document.getElementById(
+        "engineAudio"
+    );
+
+const soundButton =
+    document.getElementById(
+        "soundButton"
+    );
+
+let soundEnabled = false;
+
+
+/*
+ * Browsers normally require user interaction
+ * before audible audio can start.
+ */
+
+async function startEngine(){
+
+    try{
+
+        await engine.play();
+
+        soundEnabled = true;
+
+        soundButton.classList.add(
+            "active"
+        );
+
+    }catch(error){
+
+        console.log(
+            "Audio waiting for user interaction"
+        );
+
+    }
+
+}
+
+
+/*
+ * SOUND BUTTON
+ */
+
+soundButton.addEventListener(
+    "click",
+    async function(){
+
+        if(!soundEnabled){
+
+            await startEngine();
+
+        }else{
+
+            engine.pause();
+
+            soundEnabled = false;
+
+            soundButton.classList.remove(
+                "active"
+            );
+
+        }
+
+    }
+);
+
+
+/*
+ * First interaction unlocks audio.
+ */
+
+window.addEventListener(
+    "pointerdown",
+    function(){
+
+        if(!soundEnabled){
+
+            startEngine();
+
+        }
+
+    },
+    {once:true}
+);
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+const loginButton =
+    document.getElementById(
+        "loginButton"
+    );
+
+
+loginButton.addEventListener(
+    "click",
+    function(){
+
+        const username =
+            document.getElementById(
+                "username"
+            ).value.trim();
+
+        const password =
+            document.getElementById(
+                "password"
+            ).value.trim();
+
+
+        if(!username || !password){
+
+            alert(
+                "Please enter your username and password."
+            );
+
+            return;
+        }
+
+
+        /*
+         * Demo only.
+         *
+         * This does NOT send credentials anywhere.
+         */
+
+        loginButton.textContent =
+            "ACCESSING...";
+
+
+        setTimeout(
+            function(){
+
+                loginButton.textContent =
+                    "ENTER";
+
+                alert(
+                    "Demo login successful."
+                );
+
+            },
+            1000
+        );
+
+    }
+);
+
+
+/* =========================================================
+   MOUSE PARALLAX
+========================================================= */
+
+let mouseX = 0;
+let mouseY = 0;
+
+window.addEventListener(
+    "pointermove",
+    function(event){
+
+        mouseX =
+            (event.clientX /
+             window.innerWidth -
+             .5);
+
+        mouseY =
+            (event.clientY /
+             window.innerHeight -
+             .5);
+
+    }
+);
+
+
+/* =========================================================
+   ANIMATION
+========================================================= */
+
+const clock =
+    new THREE.Clock();
+
+
+function animate(){
+
+    requestAnimationFrame(
+        animate
+    );
+
+
+    const delta =
+        clock.getDelta();
+
+
+    /* -----------------------------------------
+       BMW DRIVING
+    ----------------------------------------- */
+
+    if(bmw){
+
+        carProgress +=
+            driveSpeed *
+            delta *
+            60;
+
+
+        /*
+         * Loop the car.
+         */
+
+        if(carProgress >= 1){
+
+            carProgress = 0;
+
+        }
+
+
+        /*
+         * Smooth path:
+         *
+         * left -> center -> right
+         */
+
+        const x =
+            THREE.MathUtils.lerp(
+                -20,
+                20,
+                carProgress
+            );
+
+
+        /*
+         * Slight depth movement.
+         */
+
+        const z =
+            -15 +
+            Math.sin(
+                carProgress *
+                Math.PI
+            ) * 4;
+
+
+        /*
+         * Road height.
+         */
+
+        const y =
+            -0.5 +
+            Math.sin(
+               carProgress *
+                Math.PI
+            ) * .15;
+
+
+        carContainer.position.x = x;
+
+        carContainer.position.z = z;
+
+        carContainer.position.y = y;
+
+
+        /*
+         * Car turns slightly while driving.
+         */
+
+        carContainer.rotation.y =
+            THREE.MathUtils.lerp(
+                -.08,
+                .08,
+                carProgress
+            );
+
+
+        /*
+         * Small suspension movement.
+         */
+
+        carContainer.position.y +=
+            Math.sin(
+                performance.now() * .008
+            ) * .025;
+
+
+        /*
+         * ENGINE RPM EFFECT
+         */
+
+        if(soundEnabled){
+
+            const rpm =
+                0.75 +
+                Math.sin(
+                    carProgress *
+                    Math.PI
+                ) * .65;
+
+
+            engine.playbackRate =
+                THREE.MathUtils.lerp(
+                    engine.playbackRate,
+                    rpm,
+                    .08
+                );
+
+
+            engine.volume =
+                THREE.MathUtils.lerp(
+                    engine.volume,
+                    .25 +
+                    Math.sin(
+                        carProgress *
+                        Math.PI
+                    ) * .55,
+                    .05
+                );
+
+        }
+
+
+        /*
+         * SPEED DISPLAY
+         */
+
+        const kmh =
+            Math.floor(
+                40 +
+                Math.sin(
+                    carProgress *
+                    Math.PI
+                ) * 220
+            );
+
+
+        document
+            .getElementById(
+                "speedNumber"
+            )
+            .textContent =
+            String(kmh).padStart(
+                3,
+                "0"
+            );
+
+    }
+
+
+    /* -----------------------------------------
+       ROAD LIGHT MOVEMENT
+    ----------------------------------------- */
+
+    roadLights.forEach(
+        function(light){
+
+            light.position.z +=
+                0.65;
+
+            if(
+                light.position.z > 10
+            ){
+
+                light.position.z =
+                    -210;
+            }
+
+        }
+    );
+
+
+    centerLights.forEach(
+        function(light){
+
+            light.position.z +=
+                0.75;
+
+            if(
+                light.position.z > 10
+            ){
+
+                light.position.z =
+                    -210;
+            }
+
+        }
+    );
+
+
+    /* -----------------------------------------
+       PARTICLES
+    ----------------------------------------- */
+
+    particles.position.z +=
+        0.18;
+
+    if(
+        particles.position.z > 15
+    ){
+
+        particles.position.z =
+            -30;
+    }
+
+
+    /* -----------------------------------------
+       CAMERA PARALLAX
+    ----------------------------------------- */
+
+    camera.position.x =
+        THREE.MathUtils.lerp(
+            camera.position.x,
+            mouseX * .8,
+            .035
+        );
+
+    camera.position.y =
+        THREE.MathUtils.lerp(
+            camera.position.y,
+            2.8 -
+            mouseY * .45,
+            .035
+        );
+
+
+    camera.lookAt(
+        0,
+        1,
+        -5
+    );
+
+
+    /* -----------------------------------------
+       LIGHT MOVEMENT
+    ----------------------------------------- */
+
+    blueLight.position.x =
+        mouseX * 8 - 8;
+
+    blueLight.position.y =
+        4 -
+        mouseY * 2;
+
+
+    renderer.render(
+        scene,
+        camera
+    );
+
+}
+
+
+/* START */
+
+animate();
+
+
+/* =========================================================
+   RESIZE
+========================================================= */
+
+window.addEventListener(
+    "resize",
+    function(){
+
+        camera.aspect =
+            window.innerWidth /
+            window.innerHeight;
+
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(
+            window.innerWidth,
+            window.innerHeight
+        );
+
+    }
+);
+
+</script>
+
+</body>
+</html>
