@@ -1,1333 +1,174 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>BMW Astra Performance</title>
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Luxury Night Drive</title>
 <style>
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-}
-
-html,body{
-    width:100%;
-    height:100%;
-    overflow:hidden;
-    background:#02050a;
-    font-family:Arial,Helvetica,sans-serif;
-    color:white;
-}
-
-/* 3D BACKGROUND */
-#scene{
-    position:fixed;
-    inset:0;
-    width:100%;
-    height:100%;
-    z-index:1;
-}
-
-/* DARK CINEMATIC VIGNETTE */
-.vignette{
-    position:fixed;
-    inset:0;
-    z-index:2;
-    pointer-events:none;
-
-    background:
-        radial-gradient(
-            ellipse at center,
-            transparent 15%,
-            rgba(0,0,0,.25) 55%,
-            rgba(0,0,0,.9) 100%
-        );
-}
-
-/* BLUE HORIZON */
-.horizon{
-    position:fixed;
-    left:0;
-    right:0;
-    bottom:28%;
-    height:2px;
-    z-index:3;
-    pointer-events:none;
-
-    background:linear-gradient(
-        90deg,
-        transparent,
-        rgba(0,100,255,.15),
-        #168cff,
-        rgba(0,100,255,.15),
-        transparent
-    );
-
-    box-shadow:
-        0 0 15px #168cff,
-        0 0 40px rgba(0,120,255,.7);
-}
-
-/* SPEED LINES */
-.speed-lines{
-    position:fixed;
-    inset:0;
-    z-index:3;
-    pointer-events:none;
-    overflow:hidden;
-}
-
-.speed-line{
-    position:absolute;
-    width:180px;
-    height:1px;
-
-    background:linear-gradient(
-        90deg,
-        transparent,
-        rgba(40,150,255,.4),
-        #fff
-    );
-
-    box-shadow:0 0 8px #168cff;
-
-    animation:
-        speedLine 1s linear infinite;
-}
-
-.speed-line:nth-child(1){
-    top:18%;
-    animation-delay:.1s;
-}
-
-.speed-line:nth-child(2){
-    top:29%;
-    animation-delay:.35s;
-}
-
-.speed-line:nth-child(3){
-    top:41%;
-    animation-delay:.7s;
-}
-
-.speed-line:nth-child(4){
-    top:53%;
-    animation-delay:.15s;
-}
-
-.speed-line:nth-child(5){
-    top:66%;
-    animation-delay:.5s;
-}
-
-.speed-line:nth-child(6){
-    top:78%;
-    animation-delay:.85s;
-}
-
-.speed-line:nth-child(7){
-    top:89%;
-    animation-delay:.25s;
-}
-
-@keyframes speedLine{
-    from{
-        transform:translateX(-220px);
-        opacity:0;
-    }
-
-    15%{
-        opacity:1;
-    }
-
-    to{
-        transform:translateX(110vw);
-        opacity:0;
-    }
-}
-
-/* SPEED DISPLAY */
-.speed-display{
-    position:fixed;
-    top:22px;
-    left:24px;
-    z-index:20;
-
-    color:#76bdff;
-    font-size:11px;
-    letter-spacing:3px;
-
-    text-shadow:
-        0 0 10px #168cff;
-}
-
-/* LOGIN CONTAINER */
-.login-area{
-    position:fixed;
-    inset:0;
-    z-index:10;
-
-    display:flex;
-    justify-content:flex-end;
-    align-items:center;
-
-    padding:40px 7%;
-    pointer-events:none;
-}
-
-/* GLASS LOGIN */
-.login-card{
-    width:390px;
-    max-width:92vw;
-
-    padding:38px 32px;
-
-    border-radius:24px;
-
-    border:1px solid rgba(255,255,255,.14);
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(255,255,255,.13),
-            rgba(255,255,255,.035)
-        );
-
-    backdrop-filter:blur(22px);
-    -webkit-backdrop-filter:blur(22px);
-
-    box-shadow:
-        0 30px 80px rgba(0,0,0,.65),
-        inset 0 1px rgba(255,255,255,.16),
-        0 0 55px rgba(0,110,255,.12);
-
-    pointer-events:auto;
-
-    transform:
-        perspective(1000px)
-        rotateY(-4deg);
-
-    transition:.4s ease;
-}
-
-.login-card:hover{
-    transform:
-        perspective(1000px)
-        rotateY(0deg)
-        translateY(-5px);
-
-    box-shadow:
-        0 35px 100px rgba(0,0,0,.8),
-        0 0 70px rgba(0,120,255,.2);
-}
-
-/* BMW LOGO */
-.logo{
-    width:62px;
-    height:62px;
-
-    margin:auto;
-
-    border-radius:50%;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-size:11px;
-    font-weight:bold;
-    letter-spacing:1px;
-
-    border:2px solid rgba(255,255,255,.8);
-
-    background:
-        radial-gradient(
-            circle,
-            #168cff 0%,
-            #06448e 50%,
-            #020814 100%
-        );
-
-    box-shadow:
-        0 0 22px rgba(0,130,255,.7),
-        inset 0 0 15px rgba(255,255,255,.2);
-}
-
-/* BRAND */
-.brand{
-    text-align:center;
-    margin-top:17px;
-}
-
-.brand h1{
-    font-size:26px;
-    letter-spacing:5px;
-}
-
-.brand p{
-    margin-top:8px;
-
-    color:#72baff;
-
-    font-size:10px;
-    letter-spacing:4px;
-}
-
-/* INPUT */
-.field{
-    margin-top:24px;
-}
-
-.field label{
-    display:block;
-
-    margin-bottom:8px;
-
-    color:#8ea5bd;
-
-    font-size:10px;
-    letter-spacing:2px;
-}
-
-.field input{
-    width:100%;
-    height:49px;
-
-    padding:0 15px;
-
-    border-radius:12px;
-
-    border:1px solid rgba(255,255,255,.13);
-
-    outline:none;
-
-    background:rgba(0,0,0,.3);
-
-    color:white;
-
-    font-size:14px;
-
-    transition:.25s;
-}
-
-.field input::placeholder{
-    color:#64788e;
-}
-
-.field input:focus{
-    border-color:#168cff;
-
-    box-shadow:
-        0 0 0 2px rgba(0,130,255,.08),
-        0 0 20px rgba(0,130,255,.2);
-}
-
-/* ENTER */
-.enter{
-    width:100%;
-    height:50px;
-
-    margin-top:25px;
-
-    border:0;
-    border-radius:12px;
-
-    color:white;
-
-    font-weight:bold;
-    letter-spacing:3px;
-
-    cursor:pointer;
-
-    background:
-        linear-gradient(
-            100deg,
-            #0754ff,
-            #00a3ff
-        );
-
-    box-shadow:
-        0 10px 30px rgba(0,100,255,.35);
-
-    transition:.25s;
-}
-
-.enter:hover{
-    transform:translateY(-2px);
-
-    box-shadow:
-        0 15px 40px rgba(0,130,255,.55);
-}
-
-.enter:active{
-    transform:scale(.98);
-}
-
-/* SOUND */
-.sound-button{
-    position:fixed;
-    left:22px;
-    bottom:22px;
-
-    z-index:20;
-
-    width:46px;
-    height:46px;
-
-    border-radius:50%;
-
-    border:1px solid rgba(255,255,255,.2);
-
-    background:rgba(0,0,0,.45);
-
-    color:white;
-
-    cursor:pointer;
-
-    backdrop-filter:blur(12px);
-
-    transition:.25s;
-}
-
-.sound-button.active{
-    border-color:#168cff;
-
-    box-shadow:
-        0 0 25px rgba(0,130,255,.6);
-}
-
-/* LOADING */
-.loading{
-    position:fixed;
-    inset:0;
-
-    z-index:100;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    background:#02050a;
-
-    transition:
-        opacity .8s,
-        visibility .8s;
-}
-
-.loading.hidden{
-    opacity:0;
-    visibility:hidden;
-}
-
-.loading-content{
-    text-align:center;
-
-    color:#75bcff;
-
-    font-size:11px;
-
-    letter-spacing:4px;
-}
-
-.loading-bar{
-    width:190px;
-    height:2px;
-
-    margin-top:15px;
-
-    overflow:hidden;
-
-    background:rgba(255,255,255,.1);
-}
-
-.loading-bar span{
-    display:block;
-
-    width:35%;
-    height:100%;
-
-    background:#168cff;
-
-    box-shadow:0 0 15px #168cff;
-
-    animation:
-        loading 1s linear infinite;
-}
-
-@keyframes loading{
-    from{
-        transform:translateX(-150%);
-    }
-
-    to{
-        transform:translateX(500%);
-    }
-}
-
-/* MOBILE */
-@media(max-width:700px){
-
-    .login-area{
-        justify-content:center;
-        align-items:flex-end;
-
-        padding:
-            20px
-            20px
-            42px;
-    }
-
-    .login-card{
-        width:94vw;
-
-        padding:28px 23px;
-
-        transform:none;
-    }
-
-    .login-card:hover{
-        transform:none;
-    }
-
-    .speed-display{
-        top:15px;
-        left:15px;
-    }
-
-    .sound-button{
-        left:15px;
-        bottom:15px;
-    }
-}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#02040a}
+body{font-family:Arial,Helvetica,sans-serif;color:#fff}
+#app{position:fixed;inset:0}.hud{position:fixed;z-index:5;left:50%;top:7%;
+transform:translateX(-50%);text-align:center;pointer-events:none;text-transform:uppercase;letter-spacing:.22em}
+.hud h1{margin:0;font-size:clamp(34px,7vw,88px);font-weight:800}.hud p{margin:8px 0 0;font-size:10px;opacity:.55}
+#status{position:fixed;z-index:6;left:50%;bottom:6%;transform:translateX(-50%);
+font-size:10px;letter-spacing:.2em;opacity:.65;text-align:center}
 </style>
 </head>
-
 <body>
+<div id="app"></div>
+<div class="hud"><h1>NIGHT DRIVE</h1><p>Luxury Performance · 3D Experience</p></div>
+<div id="status">LOADING 3D VEHICLE</div>
 
-<!-- THREE.JS -->
-<canvas id="scene"></canvas>
-
-<!-- EFFECTS -->
-<div class="vignette"></div>
-<div class="horizon"></div>
-
-<div class="speed-lines">
-    <div class="speed-line"></div>
-    <div class="speed-line"></div>
-    <div class="speed-line"></div>
-    <div class="speed-line"></div>
-    <div class="speed-line"></div>
-    <div class="speed-line"></div>
-    <div class="speed-line"></div>
-</div>
-
-<!-- SPEED -->
-<div class="speed-display">
-    <span id="speed">000</span> KM/H
-</div>
-
-<!-- LOGIN -->
-<div class="login-area">
-
-    <div class="login-card">
-
-        <div class="logo">
-            BMW
-        </div>
-
-        <div class="brand">
-            <h1>ASTRA</h1>
-            <p>PERFORMANCE</p>
-        </div>
-
-        <div class="field">
-            <label>USERNAME</label>
-
-            <input
-                id="username"
-                type="text"
-                placeholder="Enter username"
-                autocomplete="off">
-        </div>
-
-        <div class="field">
-            <label>PASSWORD</label>
-
-            <input
-                id="password"
-                type="password"
-                placeholder="Enter password">
-        </div>
-
-        <button
-            class="enter"
-            id="enterButton">
-            ENTER
-        </button>
-
-    </div>
-
-</div>
-
-<!-- SOUND -->
-<button
-    class="sound-button"
-    id="soundButton">
-    🔊
-</button>
-
-<!-- ENGINE -->
-<audio
-    id="engineAudio"
-    src="engine.mp3"
-    preload="auto"
-    loop>
-</audio>
-
-<!-- LOADING -->
-<div class="loading" id="loading">
-
-    <div class="loading-content">
-
-        <div>INITIALIZING ASTRA</div>
-
-        <div class="loading-bar">
-            <span></span>
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- THREE.JS IMPORT MAP -->
 <script type="importmap">
-{
-    "imports": {
-        "three":
-        "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
-
-        "three/addons/":
-        "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
-    }
-}
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}
 </script>
 
-
 <script type="module">
-
 import * as THREE from "three";
+import {GLTFLoader} from "three/addons/loaders/GLTFLoader.js";
+import {EffectComposer} from "three/addons/postprocessing/EffectComposer.js";
+import {RenderPass} from "three/addons/postprocessing/RenderPass.js";
+import {UnrealBloomPass} from "three/addons/postprocessing/UnrealBloomPass.js";
 
-import {
-    GLTFLoader
-} from "three/addons/loaders/GLTFLoader.js";
+const scene=new THREE.Scene();
+scene.fog=new THREE.FogExp2(0x02040a,.018);
 
+const camera=new THREE.PerspectiveCamera(42,innerWidth/innerHeight,.1,500);
+camera.position.set(0,1.7,10);
 
-/* =====================================================
-   RENDERER
-===================================================== */
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setSize(innerWidth,innerHeight);
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.15;
+document.getElementById("app").appendChild(renderer.domElement);
 
-const canvas =
-    document.getElementById("scene");
+const composer=new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene,camera));
+composer.addPass(new UnrealBloomPass(
+ new THREE.Vector2(innerWidth,innerHeight),1.35,.65,.78
+));
 
-const renderer =
-    new THREE.WebGLRenderer({
-        canvas:canvas,
-        antialias:true,
-        alpha:true,
-        powerPreference:"high-performance"
-    });
-
-renderer.setPixelRatio(
-    Math.min(window.devicePixelRatio,2)
+const sky=new THREE.Mesh(
+ new THREE.SphereGeometry(180,32,16),
+ new THREE.ShaderMaterial({
+  side:THREE.BackSide,uniforms:{time:{value:0}},
+  vertexShader:`varying vec3 vP;void main(){vP=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+  fragmentShader:`uniform float time;varying vec3 vP;void main(){
+   float y=normalize(vP).y*.5+.5;
+   vec3 c=mix(vec3(.018,.025,.055),vec3(.002,.008,.025),y);
+   float g=exp(-pow((y-.27)*7.,2.));
+   c+=vec3(.02,.07,.16)*g;gl_FragColor=vec4(c,1.);
+  }`
+ })
 );
+scene.add(sky);
 
-renderer.setSize(
-    window.innerWidth,
-    window.innerHeight
+const road=new THREE.Mesh(
+ new THREE.PlaneGeometry(80,260),
+ new THREE.MeshStandardMaterial({color:0x030407,roughness:.38,metalness:.2})
 );
+road.rotation.x=-Math.PI/2;road.position.y=-.65;scene.add(road);
 
-renderer.outputColorSpace =
-    THREE.SRGBColorSpace;
-
-renderer.shadowMap.enabled = true;
-
-
-/* =====================================================
-   SCENE
-===================================================== */
-
-const scene =
-    new THREE.Scene();
-
-scene.background =
-    new THREE.Color(0x02050a);
-
-
-/* =====================================================
-   CAMERA
-===================================================== */
-
-const camera =
-    new THREE.PerspectiveCamera(
-        40,
-        window.innerWidth /
-        window.innerHeight,
-        .1,
-        1000
-    );
-
-camera.position.set(
-    0,
-    2.7,
-    12
-);
-
-
-/* =====================================================
-   LIGHTING
-===================================================== */
-
-const ambient =
-    new THREE.HemisphereLight(
-        0x78bfff,
-        0x020308,
-        2.2
-    );
-
-scene.add(ambient);
-
-
-/* BLUE LIGHT */
-
-const blueLight =
-    new THREE.PointLight(
-        0x168cff,
-        100,
-        100
-    );
-
-blueLight.position.set(
-    -7,
-    5,
-    4
-);
-
-scene.add(blueLight);
-
-
-/* WHITE LIGHT */
-
-const whiteLight =
-    new THREE.PointLight(
-        0xffffff,
-        80,
-        80
-    );
-
-whiteLight.position.set(
-    6,
-    4,
-    8
-);
-
-scene.add(whiteLight);
-
-
-/* =====================================================
-   ROAD
-===================================================== */
-
-const road =
-    new THREE.Mesh(
-
-        new THREE.PlaneGeometry(
-            120,
-            180
-        ),
-
-        new THREE.MeshStandardMaterial({
-            color:0x03070d,
-            roughness:.65,
-            metalness:.15
-        })
-
-    );
-
-road.rotation.x =
-    -Math.PI / 2;
-
-road.position.y =
-    -1.15;
-
-road.position.z =
-    -45;
-
-scene.add(road);
-
-
-/* =====================================================
-   ROAD SIDE LIGHTS
-===================================================== */
-
-const roadLights = [];
-
-for(let i=0;i<34;i++){
-
-    const geometry =
-        new THREE.BoxGeometry(
-            .035,
-            .035,
-            2.7
-        );
-
-    const material =
-        new THREE.MeshBasicMaterial({
-            color:0x168cff
-        });
-
-    const light =
-        new THREE.Mesh(
-            geometry,
-            material
-        );
-
-    light.position.set(
-        i % 2 === 0 ? -4.5 : 4.5,
-        -1.08,
-        -i * 6
-    );
-
-    scene.add(light);
-
-    roadLights.push(light);
+const laneMat=new THREE.MeshBasicMaterial({color:0x66aaff,transparent:true,opacity:.24});
+for(const x of [-3.2,3.2]){
+ const line=new THREE.Mesh(new THREE.PlaneGeometry(.035,260),laneMat);
+ line.rotation.x=-Math.PI/2;line.position.set(x,-.63,0);scene.add(line);
 }
 
-
-/* =====================================================
-   ROAD CENTER LIGHTS
-===================================================== */
-
-const centerLights = [];
-
-for(let i=0;i<40;i++){
-
-    const light =
-        new THREE.Mesh(
-
-            new THREE.BoxGeometry(
-                .14,
-                .015,
-                2
-            ),
-
-            new THREE.MeshBasicMaterial({
-                color:0x168cff
-            })
-
-        );
-
-    light.position.set(
-        0,
-        -1.08,
-        -i * 5
-    );
-
-    scene.add(light);
-
-    centerLights.push(light);
+const streaks=[];
+for(let i=0;i<75;i++){
+ const s=new THREE.Mesh(
+  new THREE.PlaneGeometry(THREE.MathUtils.randFloat(.015,.08),THREE.MathUtils.randFloat(1.5,7)),
+  new THREE.MeshBasicMaterial({color:0x80bfff,transparent:true,opacity:THREE.MathUtils.randFloat(.15,.65)})
+ );
+ s.rotation.x=-Math.PI/2;
+ s.position.set(THREE.MathUtils.randFloat(-10,10),-.59,THREE.MathUtils.randFloat(-90,15));
+ scene.add(s);streaks.push(s);
 }
 
-
-/* =====================================================
-   PARTICLES
-===================================================== */
-
-const particleCount = 700;
-
-const particlePositions =
-    new Float32Array(
-        particleCount * 3
-    );
-
-for(let i=0;i<particleCount;i++){
-
-    particlePositions[i*3] =
-        (Math.random()-.5)*90;
-
-    particlePositions[i*3+1] =
-        Math.random()*30-2;
-
-    particlePositions[i*3+2] =
-        Math.random()*-140;
+const count=1100,pos=new Float32Array(count*3);
+for(let i=0;i<count;i++){
+ pos[i*3]=THREE.MathUtils.randFloatSpread(80);
+ pos[i*3+1]=THREE.MathUtils.randFloat(-2,20);
+ pos[i*3+2]=THREE.MathUtils.randFloat(-100,20);
 }
-
-const particleGeometry =
-    new THREE.BufferGeometry();
-
-particleGeometry.setAttribute(
-    "position",
-    new THREE.BufferAttribute(
-        particlePositions,
-        3
-    )
-);
-
-const particleMaterial =
-    new THREE.PointsMaterial({
-        color:0x4ca8ff,
-        size:.055,
-        transparent:true,
-        opacity:.7
-    });
-
-const particles =
-    new THREE.Points(
-        particleGeometry,
-        particleMaterial
-    );
-
+const pg=new THREE.BufferGeometry();
+pg.setAttribute("position",new THREE.BufferAttribute(pos,3));
+const particles=new THREE.Points(pg,new THREE.PointsMaterial({color:0x8dbaff,size:.035,transparent:true,opacity:.6}));
 scene.add(particles);
 
+let car=null;
+new GLTFLoader().load("luxury_sports_car.glb",g=>{
+ car=g.scene;car.position.set(0,-.55,-58);car.rotation.y=Math.PI;
+ car.traverse(o=>{
+  if(o.isMesh){
+   o.castShadow=true;o.receiveShadow=true;
+   if(o.material){
+    o.material=Array.isArray(o.material)?o.material.map(m=>m.clone()):o.material.clone();
+   }
+  }
+ });
+ car.traverse(o=>{
+  if(!o.isMesh||!o.material)return;
+  const ms=Array.isArray(o.material)?o.material:[o.material];
+  ms.forEach(m=>{
+   if(m.color)m.color.lerp(new THREE.Color(0x050608),.72);
+   if("roughness"in m)m.roughness=Math.min(m.roughness,.3);
+   if("metalness"in m)m.metalness=Math.max(m.metalness,.72);
+  });
+ });
+ scene.add(car);document.getElementById("status").textContent="SYSTEM READY";
+},undefined,e=>{
+ console.error(e);
+ document.getElementById("status").textContent="ADD luxury_sports_car.glb TO THIS FOLDER";
+});
 
-/* =====================================================
-   BMW 3D MODEL
-===================================================== */
-
-const car =
-    new THREE.Group();
-
-scene.add(car);
-
-let bmwModel = null;
-
-const loader =
-    new GLTFLoader();
-
-
-loader.load(
-
-    "bmw.glb",
-
-    function(gltf){
-
-        bmwModel =
-            gltf.scene;
-
-        /*
-         * MODEL SIZE
-         *
-         * If your model is too big/small,
-         * change these values.
-         */
-
-        bmwModel.scale.set(
-            2,
-            2,
-            2
-        );
-
-
-        /*
-         * Shadows
-         */
-
-        bmwModel.traverse(
-            function(object){
-
-                if(object.isMesh){
-
-                    object.castShadow = true;
-
-                    object.receiveShadow = true;
-
-                }
-
-            }
-        );
-
-
-        /*
-         * Car direction.
-         *
-         * If your BMW drives backwards,
-         * change Math.PI to 0.
-         */
-
-        bmwModel.rotation.y =
-            Math.PI;
-
-
-        car.add(bmwModel);
-
-
-        /*
-         * Initial position
-         */
-
-        car.position.set(
-            -22,
-            -0.45,
-            -18
-        );
-
-
-        /*
-         * Remove loading screen
-         */
-
-        document
-            .getElementById("loading")
-            .classList.add("hidden");
-
-    },
-
-    function(progress){
-
-        if(progress.total){
-
-            console.log(
-                "BMW loading:",
-                Math.round(
-                    progress.loaded /
-                    progress.total *
-                    100
-                ) + "%"
-            );
-
-        }
-
-    },
-
-    function(error){
-
-        console.error(
-            "Could not load bmw.glb",
-            error
-        );
-
-        document
-            .querySelector(".loading-content > div")
-            .textContent =
-            "BMW MODEL NOT FOUND";
-
-    }
-
-);
-
-
-/* =====================================================
-   CAR ANIMATION
-===================================================== */
-
-let progress = 0;
-
-/*
- * Increase this value for faster driving.
- */
-
-const driveSpeed =
-    0.00042;
-
-
-/* =====================================================
-   ENGINE
-===================================================== */
-
-const engine =
-    document.getElementById(
-        "engineAudio"
-    );
-
-const soundButton =
-    document.getElementById(
-        "soundButton"
-    );
-
-let soundOn = false;
-
-
-/* Start engine after user interaction */
-
-async function startEngine(){
-
-    try{
-
-        await engine.play();
-
-        soundOn = true;
-
-        soundButton.classList.add(
-            "active"
-        );
-
-    }catch(error){
-
-        console.log(
-            "Audio needs user interaction."
-        );
-
-    }
-
+const headGroup=new THREE.Group();scene.add(headGroup);
+for(const x of [-.65,.65]){
+ const spot=new THREE.SpotLight(0xbfdcff,95,45,Math.PI/9,.55,1.5);
+ spot.position.set(x,.15,1.5);spot.target.position.set(x*.8,-.2,-28);
+ headGroup.add(spot,spot.target);
+ const glow=new THREE.Mesh(new THREE.SphereGeometry(.12,16,16),new THREE.MeshBasicMaterial({color:0xffffff}));
+ glow.position.copy(spot.position);headGroup.add(glow);
 }
 
-
-/* Sound button */
-
-soundButton.addEventListener(
-    "click",
-    async function(){
-
-        if(soundOn){
-
-            engine.pause();
-
-            soundOn = false;
-
-            soundButton.classList.remove(
-                "active"
-            );
-
-        }else{
-
-            await startEngine();
-
-        }
-
-    }
-);
-
-
-/* =====================================================
-   MOUSE PARALLAX
-===================================================== */
-
-let mouseX = 0;
-let mouseY = 0;
-
-window.addEventListener(
-    "pointermove",
-    function(event){
-
-        mouseX =
-            event.clientX /
-            window.innerWidth -
-            .5;
-
-        mouseY =
-            event.clientY /
-            window.innerHeight -
-            .5;
-
-    }
-);
-
-
-/* =====================================================
-   LOGIN BUTTON
-===================================================== */
-
-document
-    .getElementById("enterButton")
-    .addEventListener(
-        "click",
-        function(){
-
-            const username =
-                document
-                .getElementById("username")
-                .value
-                .trim();
-
-            const password =
-                document
-                .getElementById("password")
-                .value
-                .trim();
-
-
-            if(!username || !password){
-
-                alert(
-                    "Please enter your username and password."
-                );
-
-                return;
-
-            }
-
-
-            this.textContent =
-                "ACCESSING...";
-
-
-            setTimeout(
-                () => {
-
-                    this.textContent =
-                        "ENTER";
-
-                    alert(
-                        "Demo login successful."
-                    );
-
-                },
-                1000
-            );
-
-        }
-    );
-
-
-/* =====================================================
-   ANIMATION LOOP
-===================================================== */
-
-const clock =
-    new THREE.Clock();
-
-
+let t=0;const clock=new THREE.Clock();
 function animate(){
+ requestAnimationFrame(animate);
+ const dt=Math.min(clock.getDelta(),.05);t+=dt;
+ sky.material.uniforms.time.value=t;
 
-    requestAnimationFrame(
-        animate
-    );
-
-
-    const delta =
-        clock.getDelta();
-
-
-    /* -----------------------------------------------
-       BMW DRIVE
-    ------------------------------------------------ */
-
-    if(bmwModel){
-
-        progress +=
-            driveSpeed *
-            delta *
-            60;
-
-
-        if(progress >= 1){
-
-            progress = 0;
-
-        }
-
-
-        /*
-         * Left → center → right
-         */
-
-        const x =
-            THREE.MathUtils.lerp(
-                -22,
-                22,
-                progress
-            );
-
-
-        /*
-         * BMW gets slightly closer
-         * in the middle of the scene.
-         */
-
-        const z =
-            -18 +
-            Math.sin(
-                progress * Math.PI
-            ) * 5;
-
-
-        car.position.x = x;
-
-        car.position.z = z;
-
-        car.position.y =
-            -.45 +
-            Math.sin(
-                performance.now() * .008
-            ) * .025;
-
-
-        /*
-         * Small steering movement.
-         */
-
-        car.rotation.y =
-            THREE.MathUtils.lerp(
-                -.07,
-                .07,
-                progress
-            );
-
-
-        /*
-         * Engine RPM
-         */
-
-        const rpm =
-            .75 +
-            Math.sin(
-                progress * Math.PI
-            ) * .7;
-
-
-        if(soundOn){
-
-            engine.playbackRate =
-                THREE.MathUtils.lerp(
-                    engine.playback
-                      rpm,
-
-.08
-
+ if(car){
+  const c=(t%7)/7;
+  const e=c<.5?2*c*c:1-Math.pow(-2*c+2,2)/2;
+  car.position.z=THREE.MathUtils.lerp(-58,2.2,e);
+  car.scale.setScalar(1+Math.sin(t*8)*.012);
+  car.rotation.y=Math.PI+Math.sin(t*1.5)*.018;
+  headGroup.position.copy(car.position);headGroup.rotation.y=car.rotation.y;
+  headGroup.visible=car.position.z>-45;
+ }
+ streaks.forEach((s,i)=>{
+  s.position.z+=dt*(12+(i%5)*4);
+  if(s.position.z>16){s.position.z=-100-Math.random()*35;s.position.x=THREE.MathUtils.randFloat(-10,10);}
+ });
+ for(let i=0;i<count;i++){
+  pos[i*3+2]+=dt*(2.5+(i%7)*.5);
+  if(pos[i*3+2]>22)pos[i*3+2]=-100;
+ }
+ particles.geometry.attributes.position.needsUpdate=true;
+ camera.position.x=Math.sin(t*.32)*.12;
+ camera.position.y=1.55+Math.sin(t*.55)*.025;
+ camera.lookAt(0,.15,-15);
+ composer.render();
 }
+animate();
 
-engine.volume =
-
-THREE.MathUtils.lerp(
-
-);
-
-engine.volume,
-
-.2+
-
-Math.sin(
-
-progress * Math.Pl
-
-)*.6,
-
-.05
-
-* Speed display */
-
-const speed =
-
-Math.floor(
-
-);
-
-50+
-
-Math.sin(
-
-progress * Math. Pl
-
-)* 220
-
-document
-
-.getElementByld("speed")
-
-textContent =
-
-String (speed)
-
-.padStart(3,"O")
+addEventListener("resize",()=>{
+ camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
+ renderer.setSize(innerWidth,innerHeight);composer.setSize(innerWidth,innerHeight);
+});
+</script>
+</body>
+</html>
